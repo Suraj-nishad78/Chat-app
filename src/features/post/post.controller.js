@@ -14,10 +14,12 @@ const allPosts = (req, res) =>{
 
 const createPosts = (req, res) =>{
     try{
+
         const {caption, imageUrl} = req.body;
         let userId = req.user.id;
         const newPost = {userId, caption, imageUrl}
         const postCreated = createPost(newPost)
+
         if(!postCreated){
             return res.status(400).json({
                 status:"FAILED",
@@ -27,8 +29,10 @@ const createPosts = (req, res) =>{
     
         res.status(201).json({
             status:"success",
-            msg:"Post created successfully!"
+            msg:"Post created successfully!",
+            post:postCreated
         })
+
     } catch(error){
         res.status(401).json({
             status:"FAILED",
@@ -67,6 +71,25 @@ const postById = (req, res) =>{
 const userUpdatePost = (req, res) =>{
     const {id} = req.params;
 
+    const checkPostExist = getAllPosts().find(post=>post.id === Number(id))
+    
+    if(!checkPostExist) {
+        return res.status(400).json({
+            status:"FAILED",
+            msg:`The post with ID ${id} does not exist in the system.`
+        })
+    }
+
+    let userId = Number(req.user.id);
+    const checkUserExist = getAllPosts().find(post=>post.id === Number(id) && post.userId === userId)
+
+    if(!checkUserExist) {
+        return res.status(400).json({
+            status:"FAILED",
+            msg:`You are not allowed to update this post!`
+        })
+    }
+
     const updatedPost = updatePost(Number(id), req.body)
 
     if(!updatedPost) {
@@ -86,6 +109,26 @@ const userUpdatePost = (req, res) =>{
 
 const userDeletePost = (req, res) =>{
     const {id} = req.params;
+
+    const checkPostExist = getAllPosts().find(post=>post.id === Number(id))
+    
+    if(!checkPostExist) {
+        return res.status(400).json({
+            status:"FAILED",
+            msg:`The post with ID ${id} does not exist in the system.`
+        })
+    }
+
+    let userId = Number(req.user.id);
+    const checkUserExist = getAllPosts().find(post=>post.id === Number(id) && post.userId === userId)
+
+    if(!checkUserExist) {
+        return res.status(400).json({
+            status:"FAILED",
+            msg:`You are not allowed to delete this post!`
+        })
+    }
+
     const postDeleted = deletePost(Number(id))
     if(!postDeleted){
         return res.status(400).json({
