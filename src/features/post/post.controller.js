@@ -1,4 +1,6 @@
 
+import path from "path"
+
 import {getAllPosts, 
         userPosts, 
         getPostById,
@@ -14,10 +16,10 @@ const allPosts = (req, res) =>{
 
 const createPosts = (req, res) =>{
     try{
-
-        const {caption, imageUrl} = req.body;
+        const {caption} = req.body;
         let userId = req.user.id;
-        const newPost = {userId, caption, imageUrl}
+        const{ file} = req;
+        const newPost = {userId, caption, imageUrl:file.filename}
         const postCreated = createPost(newPost)
 
         if(!postCreated){
@@ -90,7 +92,10 @@ const userUpdatePost = (req, res) =>{
         })
     }
 
-    const updatedPost = updatePost(Number(id), req.body)
+    const {caption} = req.body;
+    const{ file} = req;
+    const updateData = { caption, imageUrl:file.filename}
+    const updatedPost = updatePost(Number(id), updateData)
 
     if(!updatedPost) {
         return res.status(400).json({

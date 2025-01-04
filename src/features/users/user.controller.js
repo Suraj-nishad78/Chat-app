@@ -6,52 +6,55 @@ import jwt from "jsonwebtoken"
 
 
 //import function here
-
 import {createUsers, findUsers, getAllUsers} from "./user.model.js"
+import {customErrorHandler} from "../../middleware/errorHandler.middleware.js"
 
-const allUser = (req, res)=>{
-    const users = getAllUsers()
-    res.status(200).json(users)
-}
-
-const signupUser = (req, res)=>{
-    const { name, email, password} = req.body;
-
-    const encryptPassword = bcrypt.hashSync(password, 5)
-    const newUser = { name, email, password:encryptPassword}
-    const user = createUsers(newUser)
-    if(!user){
-        res.status(400).json({
-            status: "FAILED",
-            msg:"User signup failed. Please try again!"
-        })    
+const allUser = (req, res, next)=>{
+    try{
+        const users = getAllUsers()
+        if(!(users && users.length)){
+            throw new customErrorHandler(404, "No users found")
+        }
+        return res.status(200).json(users)
+    } catch(err){
+        next(err)
     }
-    res.status(201).json({
-        status: "Success",
-        msg:user
-    })
 }
 
-const loginUser = (req, res)=>{
+const signupUser = (req, res, next)=>{
+    try{
+        const { name, email, password} = req.body;
+        if(!name || !email || !password){
+            throw new customErrorHandler(400, "Missing required fields: name, email, or password")
+        }
+        const encryptPassword = bcrypt.hashSync(password, 5)
+        const newUser = { name, email, password:encryptPassword}
+        const user = createUsers(newUser)
+
+        res.status(201).json({
+            status: "Success",
+            msg:"User created successfully",
+            user
+        })
+    } catch(err){
+        next(err)
+    }
+}
+
+const loginUser = (req, res, next)=>{
     try{
         const {email, password} = req.body;
         
         const user = findUsers(email);
         
         if(!user){
-            return res.status(400).json({
-                status: "FAILED",
-                msg:"User with the given email does not exist!"
-            })
+            throw new customErrorHandler(400, "User with the given email does not exist!")
         }
-
+        
         const passwordMatch = bcrypt.compareSync(password, user.password)
-
+        
         if(!passwordMatch){
-            return res.status(400).json({
-                status: "FAILED",
-                msg:"Invalid credentials!"
-            })
+            throw new customErrorHandler(400, "Invalid credentials!")
         }
 
         const token =  jwt.sign(user, process.env.SECRET_KEY, {expiresIn:'3m'})
@@ -65,11 +68,8 @@ const loginUser = (req, res)=>{
             token
         })
 
-    } catch(error){
-        res.status(400).json({
-            status: "FAILED",
-            msg:`Something went wrong!`
-        })
+    } catch(err){
+        next(err)
     }
 }
 

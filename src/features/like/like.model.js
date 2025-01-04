@@ -5,7 +5,27 @@ const allLikes = () =>{
     return likes
 }
 
-const likeById = (id) =>{
-    const likedPost = allLikes().filter(like=> like.postId === id)
-    return likedPost;
+const likeById = (postId) =>{
+    const likedPost = allLikes().filter(like=> like.postId === postId)
+    if(likedPost && likedPost.length){
+        return likedPost;
+    }
+    return false;
 }
+
+const toggleLikePost = (userId, postId) =>{
+    const newLike = {id, userId, postId}
+    const likedExist = allLikes().find( like => like.postId === postId && like.userId === userId)
+
+    if(likedExist){
+        // likes = likes.filter(like => like.postId !== postId && like.userId !== userId)
+        likes = likes.filter(like => !(like.postId === postId && like.userId === userId));
+        return false;
+    } else {
+        likes.push(newLike)
+        id++;
+        return newLike;
+    }
+}
+
+export {allLikes, likeById, toggleLikePost}

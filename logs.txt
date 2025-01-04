@@ -1,0 +1,16 @@
+{"level":"info","message":"req URL: /api/posts/all req body: {}"}
+{"level":"info","message":"req URL: /api/likes/1 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/5 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/5 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/1 req body: {}"}
+{"level":"info","message":"req URL: /api/posts req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/1 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/1 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/1 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/1 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/1 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/1 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/1 req body: {}"}
+{"level":"info","message":"req URL: /api/posts req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/1 req body: {}"}
+{"level":"info","message":"req URL: /api/likes/toggle/1 req body: {}"}
