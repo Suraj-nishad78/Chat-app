@@ -22,7 +22,7 @@ const updateComment = (id, cmt) =>{
     const commentIndex = comments.findIndex(comment=>comment.id === id)
 
     if(commentIndex === -1){
-        return null;
+        return false;
     }
 
     comments[commentIndex] = {...comments[commentIndex], ...cmt}

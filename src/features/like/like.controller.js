@@ -8,7 +8,7 @@ const getLikedPostById = (req, res, next) =>{
     try{
         const {postId} = req.params;
         const likedPost = likeById(Number(postId));
-        if(!likedPost){
+        if(!likedPost.length){
             throw new customErrorHandler(404, `No liked post was found for the post ID: ${postId}.`)
         }
         

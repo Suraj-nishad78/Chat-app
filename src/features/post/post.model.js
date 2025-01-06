@@ -1,3 +1,7 @@
+
+import { likeById } from "../../features/like/like.model.js"
+import{ commentsById } from "../../features/comment/comment.model.js"
+
 let posts = []
 let id = 1;
 
@@ -41,11 +45,34 @@ const deletePost = (id) =>{
     return delPost;
 }
 
+const changePostStatus =(postId, status) =>{
+    const postIndex = getAllPosts().findIndex(post => post.id === postId)
+    
+    posts[postIndex].status = status;
+
+    return true;
+
+}
+
+const draftAndArchivePost = (userId, status) =>{
+    const post = getAllPosts().filter(post => post.userId === userId && post.status === status)
+    return post;
+}
+
+const postEngagement = (postId) =>{
+    const totalLikes = likeById(postId).length;
+    const totalComments = commentsById(postId).length;
+    return Number(totalLikes) + Number(totalComments);
+}
+
 
 export {getAllPosts, 
         getPostById, 
         createPost, 
         userPosts, 
         updatePost, 
-        deletePost
+        deletePost,
+        changePostStatus,
+        draftAndArchivePost,
+        postEngagement
      }
