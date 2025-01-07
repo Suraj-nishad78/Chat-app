@@ -14,8 +14,8 @@ import {getAllPosts,
 import {customErrorHandler} from "../../middleware/errorHandler.middleware.js"
 import {getAllUsers, addBookmarkInUser} from "../../features/users/user.model.js"
 
-const allPosts = (req, res, next) =>{
-
+const allPosts = (req, res) =>{
+    const {limit = 10, offset = 0} =  req.query;
     const allPosts = getAllPosts().filter(post => post.status === "active")
     if(!allPosts.length){
         return res.status(200).json({
@@ -23,7 +23,8 @@ const allPosts = (req, res, next) =>{
             msg:"No post found in the system" 
         })
     }
-    res.status(200).json(allPosts)
+    const posts = allPosts.slice(Number(offset), Number(offset) + Number(limit))
+    res.status(200).json(posts)
 }
 
 const createPosts = (req, res, next) =>{

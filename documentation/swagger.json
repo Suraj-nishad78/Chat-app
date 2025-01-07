@@ -1,0 +1,1151 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Post away App: Customers API",
+        "description": "API for managing posts, comments, likes,  and their signup/login operations"
+      },
+      "host":"localhost:3000",
+      "basePath": "/",
+      "schemes": ["http"],
+      "paths":{
+        "/api/users": {
+            "get": {
+              "summary": "Get all users",
+              "description": "Retrieve a list of all registered users",
+              "tags": ["Users"],
+              "responses": {
+                "200": {
+                  "description": "A list of all users",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "John Doe"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "john.doe@example.com"
+                            }
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "id": 1,
+                          "name": "John Doe",
+                          "email": "john.doe@example.com"
+                        },
+                        {
+                          "id": 2,
+                          "name": "Jane Smith",
+                          "email": "jane.smith@example.com"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "404": {
+                  "description": "No users found",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Error",
+                        "message": "No users found"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        },
+        "/api/signup": {
+            "post": {
+              "summary": "Users Signup",
+              "tags": ["Users"],
+              "parameters": [
+                {
+                  "name": "body",
+                  "in": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string" },
+                      "email": { "type": "string" },
+                      "password": { "type": "string" }
+                    },
+                    "required": ["name", "email", "password"]
+                  }
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Users signed up successfully",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": { "type": "string" },
+                      "message": { "type": "string" },
+                      "user":{
+                         "type": "string",
+                         "properties": {
+                            "name": { "type": "string" },
+                            "email": { "type": "string" },
+                            "password": { "type": "string" }
+                          }
+                        }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Missing details",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": { "type": "string" },
+                      "message": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+        },
+        "/api/signin": {
+            "post": {
+              "summary": "Users Signin",
+              "tags": ["Users"],
+              "parameters": [
+                {
+                  "name": "body",
+                  "in": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "email": { "type": "string" },
+                      "password": { "type": "string" }
+                    },
+                    "required": ["email", "password"]
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Users signin up successfully",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": { "type": "string" },
+                      "message": { "type": "string" },
+                      "token":{"type": "string"}
+                    }
+                  }
+                },
+                "404": {
+                  "description": "Email Mismatch ",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": { "type": "string" },
+                      "message": { "type": "string" }
+                    }
+                  }
+                },
+                "400": {
+                    "description": "Password Mismatch ",
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "status": { "type": "string" },
+                        "message": { "type": "string" }
+                      }
+                    }
+                  }
+              }
+            }
+        },
+        "/api/posts/all": {
+            "get": {
+              "summary": "Get all active posts",
+              "tags": ["Posts"],
+              "parameters": [
+                {
+                  "name": "limit",
+                  "in": "query",
+                  "description": "Number of posts to return",
+                  "required": false,
+                  "schema": {
+                    "type": "integer",
+                    "default": 10
+                  }
+                },
+                {
+                  "name": "offset",
+                  "in": "query",
+                  "description": "Offset for pagination",
+                  "required": false,
+                  "schema": {
+                    "type": "integer",
+                    "default": 0
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully retrieved all active posts",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "number" },
+                              "postId": { "type": "number" },
+                              "caption": { "type": "string" },
+                              "imageUrl":{ "type": "string" },
+                              "status":{ "type": "string" }
+                            }
+                          }
+                      }
+                    }
+                  }
+                },
+                "404": {
+                  "description": "No posts found",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Success",
+                        "msg": "No post found in the system"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        },
+        "/api/posts": {
+            "get": {
+              "summary": "Get all posts of a user",
+              "operationId": "userAllPosts",
+              "tags": ["Posts"],
+              "responses": {
+                "200": {
+                  "description": "Successfully retrieved user posts",
+                  "content": {
+                    "application/json": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "number" },
+                          "postId": { "type": "number" },
+                          "caption": { "type": "string" },
+                          "imageUrl":{ "type": "string" },
+                          "status":{ "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "User not logged in",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Error",
+                        "msg": "Please login first!"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "post": {
+              "summary": "Create a new post",
+              "operationId": "createPosts",
+              "tags": ["Posts"],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "multipart/form-data": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "caption": {
+                          "type": "string",
+                          "description": "Caption for the post"
+                        },
+                        "imageUrl": {
+                          "type": "string",
+                          "format": "binary",
+                          "description": "Image for the post"
+                        }
+                      },
+                      "required": ["caption", "imageUrl"]
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "201": {
+                  "description": "Successfully created a new post",
+                  "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "number" },
+                                  "postId": { "type": "number" },
+                                  "caption": { "type": "string" },
+                                  "imageUrl":{ "type": "string" },
+                                  "status":{ "type": "string" }
+                                }
+                              }
+                          }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Missing required fields or failed to create post",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Error",
+                        "msg": "Posting Failed. Please try again!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        },
+        "/api/posts/{id}": {
+            "get": {
+              "summary": "Get post by ID",
+              "operationId": "postById",
+              "tags": ["Posts"],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "description": "ID of the post"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully retrieved post by ID",
+                  "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "number" },
+                                  "postId": { "type": "number" },
+                                  "caption": { "type": "string" },
+                                  "imageUrl":{ "type": "string" },
+                                  "status":{ "type": "string" }
+                                }
+                              }
+                          }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Post not found",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Error",
+                        "msg": "The post with ID 1 does not exist in the system."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "put": {
+              "summary": "Update post by ID",
+              "operationId": "userUpdatePost",
+              "tags": ["Posts"],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "description": "ID of the post"
+                }
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "multipart/form-data": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "caption": {
+                          "type": "string",
+                          "description": "Caption of the post"
+                        },
+                        "imageUrl": {
+                          "type": "string",
+                          "format": "binary",
+                          "description": "Image of the post"
+                        }
+                      },
+                      "required": ["caption", "imageUrl"]
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Successfully updated post",
+                  "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "number" },
+                                  "postId": { "type": "number" },
+                                  "caption": { "type": "string" },
+                                  "imageUrl":{ "type": "string" },
+                                  "status":{ "type": "string" }
+                                }
+                              }
+                          }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Failed to update post",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Error",
+                        "msg": "Post Updation failed!"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "delete": {
+              "summary": "Delete post by ID",
+              "operationId": "userDeletePost",
+              "tags": ["Posts"],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "description": "ID of the post"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully deleted post",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Success",
+                        "msg": "Post deleted successfully"
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Failed to delete post",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Error",
+                        "msg": "Something went wrong. Please try again!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        },
+        "/api/posts/caption/{caption}": {
+            "get": {
+              "summary": "Get posts by caption",
+              "operationId": "getPostByCaption",
+              "tags": ["Caption"],
+              "parameters": [
+                {
+                  "name": "caption",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "Caption query string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully retrieved posts by caption",
+                  "content": {
+                    "application/json": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Post"
+                      }
+                    }
+                  }
+                },
+                "200": {
+                  "description": "No posts found with the caption",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Success",
+                        "msg": "No post found with given query"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        },
+        "/api/posts/bookmarks": {
+            "get": {
+              "summary": "Get all bookmarks of the current user",
+              "tags": ["Bookmark"],
+              "description": "Fetches all posts bookmarked by the currently authenticated user.",
+              "responses": {
+                "200": {
+                  "description": "List of bookmarks",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "Success"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "example": "Bookmarks are listed here!"
+                          },
+                          "bookmarks": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "number" },
+                                  "postId": { "type": "number" },
+                                  "caption": { "type": "string" },
+                                  "imageUrl":{ "type": "string" },
+                                  "status":{ "type": "string" }
+                                }
+                              }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "404": {
+                  "description": "No bookmarks found"
+                }
+              }
+            }
+        },
+          "/api/posts/bookmark/{pId}": {
+            "get": {
+              "summary": "Add a post to bookmarks",
+              "tags": ["Bookmark"],
+              "description": "Adds the specified post to the current user's bookmarks.",
+              "parameters": [
+                {
+                  "name": "pId",
+                  "in": "path",
+                  "required": true,
+                  "description": "Post ID to bookmark",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Bookmark added successfully",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "Success"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "example": "Bookmark added successfully with given Post Id: 1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "404": {
+                  "description": "Post not found"
+                },
+                "400": {
+                  "description": "Error adding bookmark"
+                }
+              }
+            }
+        },
+        "/api/posts/drafts": {
+            "get": {
+              "summary": "Get all draft posts of the current user",
+              "tags": ["Draft"],
+              "description": "Fetches all posts that are in the draft status for the currently authenticated user.",
+              "responses": {
+                "200": {
+                  "description": "List of draft posts",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "Success"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "example": "Draft posts are listed here!"
+                          },
+                          "drafts": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "number" },
+                                  "postId": { "type": "number" },
+                                  "caption": { "type": "string" },
+                                  "imageUrl":{ "type": "string" },
+                                  "status":{ "type": "string" }
+                                }
+                              }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "No draft posts found"
+                }
+              }
+            }
+        },
+          "/api/posts/draft/{pId}": {
+            "get": {
+              "summary": "Draft a post",
+              "tags": ["Draft"],
+              "description": "Changes the specified post's status to draft.",
+              "parameters": [
+                {
+                  "name": "pId",
+                  "in": "path",
+                  "required": true,
+                  "description": "Post ID to be drafted",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Post drafted successfully",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "Success"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "example": "Post drafted successfully with given Post Id: 1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "404": {
+                  "description": "Post not found"
+                },
+                "400": {
+                  "description": "Error drafting post"
+                }
+              }
+            }
+        },
+        "/api/posts/archive": {
+            "get": {
+              "summary": "Get all archived posts of the current user",
+              "tags": ["Archive"],
+              "description": "Fetches all posts that are archived by the currently authenticated user.",
+              "responses": {
+                "200": {
+                  "description": "List of archived posts",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "Success"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "example": "Archived posts are listed here!"
+                          },
+                          "drafts": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "number" },
+                                  "postId": { "type": "number" },
+                                  "caption": { "type": "string" },
+                                  "imageUrl":{ "type": "string" },
+                                  "status":{ "type": "string" }
+                                }
+                              }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "No archived posts found"
+                }
+              }
+            }
+        },
+          "/api/posts/archive/{pId}": {
+            "get": {
+              "summary": "Archive a post",
+              "tags": ["Archive"],
+              "description": "Changes the specified post's status to archived.",
+              "parameters": [
+                {
+                  "name": "pId",
+                  "in": "path",
+                  "required": true,
+                  "description": "Post ID to be archived",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Post archived successfully",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "Success"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "example": "Post archived successfully with given Post Id: 1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "404": {
+                  "description": "Post not found"
+                },
+                "400": {
+                  "description": "Error archiving post"
+                }
+              }
+            }
+        },
+        "/api/posts/trending": {
+            "get": {
+              "summary": "Get trending posts",
+              "tags": ["Trending"],
+              "description": "Fetches posts with the highest engagement score, sorted by engagement.",
+              "responses": {
+                "200": {
+                  "description": "List of trending posts",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "Success"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "example": "Trending"
+                          },
+                          "posts": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": { "type": "number" },
+                                  "postId": { "type": "number" },
+                                  "caption": { "type": "string" },
+                                  "imageUrl":{ "type": "string" },
+                                  "status":{ "type": "string" }
+                                }
+                              }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        },
+        "/api/likes/{postId}": {
+            "get": {
+              "summary": "Get liked posts by Post ID",
+              "tags": ["Like"],
+              "description": "Retrieve the details of the post with total likes by post ID",
+              "parameters": [
+                {
+                  "name": "postId",
+                  "in": "path",
+                  "required": true,
+                  "description": "The ID of the post to get the likes for",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully retrieved liked post",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Success",
+                        "msg": "Like post",
+                        "post": {
+                          "id": {"type":"number"},
+                          "postId": {"type":"number"},
+                          "caption": {"type":"string"},
+                          "imageUrl":{"type":"string"},
+                          "status":{"type":"string"},
+                          "TotalLikes": {"type":"number"}
+                        }
+                      }
+                    }
+                  }
+                },
+                "404": {
+                  "description": "No liked post found for the given post ID"
+                }
+              }
+            }
+        },
+        "/api/likes/toggle/{postId}": {
+            "get": {
+              "summary": "Toggle like status for a post",
+              "tags": ["Like"],
+              "description": "Like or unlike a post by Post ID",
+              "parameters": [
+                {
+                  "name": "postId",
+                  "in": "path",
+                  "required": true,
+                  "description": "The ID of the post to like or unlike",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Successfully toggled like status",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Success",
+                        "msg": "You have liked the Post!",
+                        "likeDetails": {
+                            "id": {"type":"number"},
+                            "postId": {"type":"number"},
+                            "caption": {"type":"string"},
+                            "imageUrl":{"type":"string"},
+                            "status":{"type":"string"}
+                          }
+                      }
+                    }
+                  }
+                },
+                "404": {
+                  "description": "Post with the given ID does not exist"
+                },
+                "200": {
+                  "description": "Like removed from the post"
+                }
+              }
+            }
+        },
+        "/api/comments/{id}": {
+            "get": {
+              "summary": "Get comments for a post by Post ID",
+              "description": "Retrieve all comments for the given post ID",
+              "tags": ["comment"],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "description": "The ID of the post to get comments for",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully retrieved comments for the post",
+                  "content": {
+                    "application/json": {
+                      "example": [
+                        {
+                          "id": 1,
+                          "postId": 1,
+                          "content": "This is a comment",
+                          "userId": 5
+                        },
+                        {
+                          "id": 2,
+                          "postId": 1,
+                          "content": "This is another comment",
+                          "userId": 3
+                        }
+                      ]
+                    }
+                  }
+                },
+                "404": {
+                  "description": "No comments found for the given Post ID"
+                }
+              }
+            },
+            "post": {
+              "summary": "Post a comment on a post",
+              "description": "Add a new comment to a post by Post ID",
+              "tags": ["comment"],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "description": "The ID of the post to comment on",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "string",
+                          "example": "This is a new comment"
+                        }
+                      },
+                      "required": ["content"]
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "201": {
+                  "description": "Successfully posted the comment",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Success",
+                        "msg": "Commented Successfully!",
+                        "comment": {
+                          "userId": 5,
+                          "postId": 1,
+                          "content": "This is a new comment"
+                        }
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Bad request - Missing content field"
+                },
+                "404": {
+                  "description": "Post with the given ID does not exist"
+                }
+              }
+            },
+            "put": {
+              "summary": "Update an existing comment",
+              "description": "Update the content of a comment by its ID",
+              "tags": ["comment"],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "description": "The ID of the comment to update",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "string",
+                          "example": "Updated comment content"
+                        }
+                      },
+                      "required": ["content"]
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Successfully updated the comment",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Success",
+                        "msg": "Comment Updated Successfully!",
+                        "updatedComment": {
+                          "id": 1,
+                          "postId": 1,
+                          "content": "Updated comment content",
+                          "userId": 5
+                        }
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Bad request - Missing content field or comment not owned by the user"
+                },
+                "404": {
+                  "description": "Comment not found"
+                }
+              }
+            },
+            "delete": {
+              "summary": "Delete a comment",
+              "description": "Delete a comment by its ID",
+              "tags": ["comment"],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "description": "The ID of the comment to delete",
+                  "schema": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully deleted the comment",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "status": "Success",
+                        "msg": "Comment deleted Successfully!",
+                        "deletedComment": {
+                          "id": 1,
+                          "postId": 1,
+                          "content": "This is a comment",
+                          "userId": 5
+                        }
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Bad request - Comment not found or not owned by the user"
+                },
+                "404": {
+                  "description": "Comment with the given ID does not exist"
+                }
+              }
+            }
+        }
+    }   
+}

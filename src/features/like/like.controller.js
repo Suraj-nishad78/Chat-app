@@ -11,12 +11,18 @@ const getLikedPostById = (req, res, next) =>{
         if(!likedPost.length){
             throw new customErrorHandler(404, `No liked post was found for the post ID: ${postId}.`)
         }
+
+        const gettingPost = getAllPosts().find(post => post.id === Number(postId));
         
+        const post = {
+            ...gettingPost,
+            TotalLikes: likedPost.length
+        }
+
         res.status(200).json({
             status:"Success",
             msg:`Like post`,
-            postId,
-            TotalLikes: likedPost.length
+            post
         })
     } catch (err){
         next(err)

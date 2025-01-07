@@ -36,7 +36,6 @@ router.get("/archive/:pId", archivePost)
 //Trending Routes
 router.get("/trending", trendingPosts)
 
-
 //Post Routes
 router.get("/all", allPosts)
 router.get("/", userAllPosts)
@@ -47,7 +46,6 @@ router.delete("/:id", userDeletePost)
 
 //Caption Routes
 router.get("/caption/:caption", getPostByCaption)
-
 
 export default router
 

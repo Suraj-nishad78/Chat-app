@@ -48,7 +48,7 @@ const loginUser = (req, res, next)=>{
         const user = findUsers(email);
         
         if(!user){
-            throw new customErrorHandler(400, "User with the given email does not exist!")
+            throw new customErrorHandler(404, "User with the given email does not exist!")
         }
         
         const passwordMatch = bcrypt.compareSync(password, user.password)
