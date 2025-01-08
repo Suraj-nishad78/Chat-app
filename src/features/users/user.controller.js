@@ -27,11 +27,19 @@ const signupUser = (req, res, next)=>{
         if(!name || !email || !password){
             throw new customErrorHandler(400, "Missing required fields: name, email, or password")
         }
+        
+        
+        const existEmail = findUsers(email)
+    
+        if(existEmail){
+            throw new customErrorHandler(400, "Email address is already exist. Please use a diffrent email!")
+        }
+
         const encryptPassword = bcrypt.hashSync(password, 5)
         const newUser = { name, email, password:encryptPassword}
         const user = createUsers(newUser)
 
-        res.status(201).json({
+        res.status(201).json({  
             status: "Success",
             msg:"User created successfully",
             user
@@ -57,10 +65,10 @@ const loginUser = (req, res, next)=>{
             throw new customErrorHandler(400, "Invalid credentials!")
         }
 
-        const token =  jwt.sign(user, process.env.SECRET_KEY, {expiresIn:'3m'})
+        const token =  jwt.sign(user, process.env.SECRET_KEY, {expiresIn:'10m'})
         
         return res
-        .cookie("jwtToken", token, { httpOnly: true, maxAge:  3 * 60 * 1000 })
+        .cookie("jwtToken", token, { httpOnly: true, maxAge:  10 * 60 * 1000 })
         .status(200)
         .json({
             status: "Success",

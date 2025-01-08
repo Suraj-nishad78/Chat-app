@@ -518,12 +518,19 @@
                     "application/json": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/Post"
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "number" },
+                          "postId": { "type": "number" },
+                          "caption": { "type": "string" },
+                          "imageUrl":{ "type": "string" },
+                          "status":{ "type": "string" }
+                        }
                       }
                     }
                   }
                 },
-                "200": {
+                "404": {
                   "description": "No posts found with the caption",
                   "content": {
                     "application/json": {

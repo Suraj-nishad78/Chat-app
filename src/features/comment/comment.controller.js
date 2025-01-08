@@ -21,12 +21,18 @@ const getCommentByPid = (req, res, next) =>{
             throw new customErrorHandler(404, `No comment found with given Post Id: ${postId}`)
         }
 
-        const post = getAllPosts().map(post=>{
-            return {
-                ...post,
-                "Post Comments": comment
-            }
-        })
+
+        const getPost = getAllPosts().find(post => post.id === postId)
+        // const post = getAllPosts().map(post=>{
+        //     return {
+        //         ...post,
+        //         "Post Comments": comment
+        //     }
+        // })
+        const post = {
+            ...getPost,
+            "Post Comments": comment
+        }
     
         res.status(200).json(post)
     }catch(err){

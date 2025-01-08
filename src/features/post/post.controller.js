@@ -73,10 +73,15 @@ const userAllPosts = (req, res, next) =>{
 const postById = (req, res, next) =>{
     try{
         const {id} = req.params;
+        let userId = Number(req.user.id);
         const post = getPostById(Number(id))
     
         if(!post){
             throw new customErrorHandler(400, `The post with ID ${id} does not exist in the system.`)
+        }
+        
+        if(post.status !== "active" && post.userId !== userId){
+            throw new customErrorHandler(400, `Yor are not allowed to see this post using Post id: ${id}`)
         }
     
         res.status(200).json(post)
@@ -165,7 +170,7 @@ const getPostByCaption = (req, res, next) =>{
         const postByCapion = getAllPosts().filter(post=> post.caption.toLowerCase().includes(query))
         
         if(!postByCapion.length){
-            throw new customErrorHandler(200, `No post found with given query: ${query}`)
+            throw new customErrorHandler(404, `No post found with given query: ${query}`)
         }
         res.status(200).json(postByCapion)
     } catch(err){
@@ -259,6 +264,7 @@ const draftPost = (req, res, next) =>{
         next(err)
     }
 }
+
 
 const getDraftPost = (req, res, next) =>{
     try{
